@@ -1,0 +1,46 @@
+type Battler @entity {
+  id: ID!
+  matchInterval: BigInt!
+  reward: BigInt!
+  startTimestamp: BigInt!
+  globalSupply: BigInt!
+}
+
+type Epoch @entity {
+  id: ID!
+  random: BigInt!
+  matches: [Match!]! @derivedFrom(field: "epoch")
+}
+
+type Match @entity {
+  id: ID!
+  epoch: Epoch!
+  homeToken: Token!
+  awayToken: Token!
+  winner: Token!
+}
+
+type Token @entity {
+  id: ID!
+  contract: TokenContract!
+  tokenID: BigInt!
+  tokenIndex: BigInt!
+  owner: Owner!
+  homeMatches: [Match!]! @derivedFrom(field: "homeToken")
+  awayMatches: [Match!]! @derivedFrom(field: "awayToken")
+}
+
+type TokenContract @entity {
+  id: ID!
+  name: String!
+  currentTokenIndex: BigInt!
+  offset: BigInt
+  resolver: Bytes
+  tokens: [Token!]! @derivedFrom(field: "contract")
+}
+
+type Owner @entity {
+  id: ID!
+  balance: BigInt!
+  tokens: [Token!]! @derivedFrom(field: "owner")
+}
