@@ -4,6 +4,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+
 import "./BattleVerifier.sol";
 import "./interfaces/IResolver.sol";
 
@@ -16,6 +17,7 @@ struct Collection {
 struct Epoch {
     bool simulated;
     uint256 random;
+    mapping(uint256 => mapping(uint256 => bool)) resolved;
 }
 
 contract Battler is ERC20, Ownable {
@@ -27,8 +29,6 @@ contract Battler is ERC20, Ownable {
 
     mapping(uint256 => Epoch) private epochs;
     mapping(IERC721 => Collection) private collections;
-    mapping(uint256 => mapping(uint256 => mapping(uint256 => bool)))
-        private resolved;
 
     event AddCollection(IERC721 collection, IResolver resolver, uint256 supply);
     event BattlerCreation(
@@ -112,6 +112,7 @@ contract Battler is ERC20, Ownable {
         )
             ? IERC721Enumerable(address(awayCollection)).tokenByIndex(awayIndex)
             : awayIndex;
+
         {
             Collection storage homeStruct = collections[homeCollection];
             require(homeStruct.initialised, "Not a valid homeCollection");
@@ -136,12 +137,13 @@ contract Battler is ERC20, Ownable {
                     "Home global index is not an even multiple of random"
                 );
 
+                Epoch storage epoch = epochs[epochId];
                 require(
-                    !resolved[homeGlobalIndex][awayGlobalIndex][epochId],
+                    !epoch.resolved[homeGlobalIndex][awayGlobalIndex],
                     "This match has already been resolved"
                 );
 
-                resolved[homeGlobalIndex][awayGlobalIndex][epochId] = true;
+                epoch.resolved[homeGlobalIndex][awayGlobalIndex] = true;
             }
 
             {

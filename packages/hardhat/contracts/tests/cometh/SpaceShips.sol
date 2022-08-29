@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 
 import "./ERC721PresetMinterPauser.sol";
 
+// Does this need to be presetminterpauser
 contract SpaceShips is ERC721PresetMinterPauser {
     mapping(uint256 => uint256) public nextId;
     mapping(uint256 => uint256) public supply;

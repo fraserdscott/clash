@@ -16,8 +16,10 @@ async function main() {
     0
   );
 
+  await execute("SpaceShips", { from, log: true }, "newModel", 1, 70);
+
   for (let i = 0; i < 70; i += 1) {
-    await execute("SpaceShips", { from, log: true }, "safeMint", from);
+    await execute("SpaceShips", { from, log: true }, "mint", from, 1);
   }
 
   for (let i = 0; i < 100; i += 1) {

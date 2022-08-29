@@ -86,13 +86,15 @@ function Tokens(props) {
           loading ? null
             : (
               <div style={{ display: "flex", flexWrap: 'wrap', justifyContent: 'center' }}>
-                {data.tokens.map(p => (
-                  <Link to={`/token/${p.id}`}>
-                    <div style={{ margin: 4 }}>
-                      <TokenWidget p={p} writeContracts={props.writeContracts} />
-                    </div>
-                  </Link>
-                ))}
+                {data.tokens.length === 0
+                  ? "There are no NFT's yet."
+                  : data.tokens.map(p => (
+                    <Link to={`/token/${p.id}`}>
+                      <div style={{ margin: 4 }}>
+                        <TokenWidget p={p} writeContracts={props.writeContracts} />
+                      </div>
+                    </Link>
+                  ))}
               </div>
             )
       }
