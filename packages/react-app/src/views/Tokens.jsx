@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { ApolloClient, gql, InMemoryCache, useQuery } from "@apollo/client";
 import React from "react";
 import Address from "../components/Address";
 import { Link } from "react-router-dom";
@@ -6,33 +6,60 @@ import { tokenToName } from "./MatchWidget";
 import { useState } from "react";
 import { useEffect } from "react";
 
+const GOTCHI_QL = gql`query($id: ID){
+  aavegotchi(id: $id) {
+    id
+    svg
+  }
+}`
+
+const client = new ApolloClient({
+  uri: "https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-svg",
+  cache: new InMemoryCache(),
+});
+
 export function TokenWidget(props) {
   const [image, setImage] = useState("");
   const [gotchi, setGotchi] = useState(false);
+  const hi = useQuery(GOTCHI_QL, { client, variables: { id: props.p.tokenID } });
 
   useEffect(() => {
     async function fetchData() {
-      if (props.writeContracts.EtherOrcsPoly) {
-        if (props.p.contract.id === props.writeContracts.Cometh.address.toLowerCase()) {
+      console.log(hi.data)
+      if (props.writeContracts.EtherOrcsPoly && hi.data) {
+        if (props.p.contract.id === props.writeContracts.SpaceShips.address.toLowerCase()) {
           setImage(`https://images.service.cometh.io/${props.p.tokenID}.png`);
         } else if (props.p.contract.id === props.writeContracts.Aavegotchi.address.toLowerCase()) {
-          const image = await props.writeContracts.Aavegotchi.getAavegotchiSvg(props.p.tokenID);
+          if (hi.data.aavegotchi) {
+            const image = hi.data.aavegotchi.svg;
 
-          setGotchi(true);
-          setImage(image);
-        } else {
+            setGotchi(true);
+            setImage(image);
+          } else {
+            setImage("https://app.aavegotchi.com/images/portals/h1_closed.svg");
+          }
+        } else if (props.p.contract.id === props.writeContracts.EtherOrcsPoly.address.toLowerCase()) {
+          // Try find subgraph
           const dataURI = await props.writeContracts.EtherOrcsPoly.tokenURI(props.p.tokenID);
 
           const json = atob(dataURI.substring(29));
           const result = JSON.parse(json);
 
           setImage(result.image);
+        } else {
+          setImage("");
         }
       }
     }
     fetchData();
-  }, [props.p.contract.id, props.p.tokenID, props.writeContracts.Aavegotchi, props.writeContracts.EtherOrcsPoly])
-
+  }, [
+    hi,
+    props.p.contract.id,
+    props.p.tokenID,
+    props.writeContracts.Aavegotchi,
+    props.writeContracts.EtherOrcsPoly,
+    props.writeContracts.SpaceShips,
+  ]);
 
   return <div style={{ border: "solid", width: 300, height: 350 }}>
     {gotchi ? <div dangerouslySetInnerHTML={{ __html: image }} /> :
