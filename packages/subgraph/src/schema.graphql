@@ -32,7 +32,6 @@ type Token @entity {
 
 type TokenContract @entity {
   id: ID!
-  name: String!
   currentTokenIndex: BigInt!
   offset: BigInt
   resolver: Bytes

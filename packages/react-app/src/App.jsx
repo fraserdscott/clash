@@ -7,10 +7,7 @@ import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import {
   Account,
-  Faucet,
-  GasGauge,
   Header,
-  Ramp,
   ThemeSwitch,
   NetworkDisplay,
   FaucetHint,

@@ -15,7 +15,6 @@ const TOKEN_GRAPHQL = gql`
       id
       contract {
         id
-        name
         offset
       }
       tokenID

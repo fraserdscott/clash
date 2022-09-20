@@ -1,6 +1,6 @@
-import { deployments } from "hardhat";
+import { deployments, ethers } from "hardhat";
 
-const { execute } = deployments;
+const { execute, get } = deployments;
 
 async function main() {
   const from = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
@@ -22,13 +22,13 @@ async function main() {
     await execute("SpaceShips", { from, log: true }, "mint", from, 1);
   }
 
-  for (let i = 0; i < 100; i += 1) {
-    await execute("EtherOrcsPoly", { from, log: true }, "safeMint", from);
-  }
-
   for (let i = 0; i < 50; i += 1) {
     await execute("Aavegotchi", { from, log: true }, "mintWithTraits", from);
   }
+
+  const orcProx = await get("Proxy");
+  const orc = await ethers.getContractAt("EtherOrcsPoly", orcProx.address);
+  await orc.initMint(orc.address, 1, 101);
 }
 
 main()

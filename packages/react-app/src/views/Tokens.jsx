@@ -2,9 +2,6 @@ import { ApolloClient, gql, InMemoryCache, useQuery } from "@apollo/client";
 import React from "react";
 import Address from "../components/Address";
 import { Link } from "react-router-dom";
-import { tokenToName } from "./MatchWidget";
-import { useState } from "react";
-import { useEffect } from "react";
 
 const GOTCHI_NAME_GQL = gql`
   query ($id: ID) {
@@ -69,7 +66,7 @@ export function GotchiWidget(props) {
           )
       }
       <div>
-        <h3>{dataName && dataName.aavegotchi ? dataName.aavegotchi.name : tokenToName(props.p)}</h3>
+        <h3>{dataName && dataName.aavegotchi ? dataName.aavegotchi.name : `Gotchi #${props.p.tokenID}`}</h3>
         Owner: <Address address={props.p.owner.id} fontSize={14} />
       </div>
     </div>
@@ -77,14 +74,13 @@ export function GotchiWidget(props) {
 }
 
 export function OrcWidget(props) {
-  console.log(props.p.tokenID)
   const { data } = useQuery(ORC_GQL, { client: orcClient, variables: { _id: parseInt(props.p.tokenID) } });
 
   return (
     <div style={{ border: "solid", width: 300, height: 350 }}>
       {<img style={{ border: "solid" }} width="250" src={data && data.orc ? data.orc.metadata.image : ""} />}
       <div>
-        <h3>{data && data.orc ? data.orc.metadata.name : tokenToName(props.p)}</h3>
+        <h3>{data && data.orc ? data.orc.metadata.name : `Orc #${props.p.tokenID}`}</h3>
         Owner: <Address address={props.p.owner.id} fontSize={14} />
       </div>
     </div>
@@ -96,7 +92,7 @@ export function ComethWidget(props) {
     <div style={{ border: "solid", width: 300, height: 350 }}>
       <img style={{ border: "solid" }} width="200" src={`https://images.service.cometh.io/${props.p.tokenID}.png`} />
       <div>
-        <h3>{tokenToName(props.p)}</h3>
+        <h3>Cometh #{props.p.tokenID}</h3>
         Owner: <Address address={props.p.owner.id} fontSize={14} />
       </div>
     </div>
@@ -108,7 +104,7 @@ export function TokenWidget(props) {
     <div>{
       props.writeContracts.Aavegotchi && props.p.contract.id === props.writeContracts.Aavegotchi.address.toLowerCase() ? (
         <GotchiWidget p={props.p} writeContracts={props.writeContracts} />
-      ) : props.writeContracts.EtherOrcsPoly && props.p.contract.id === props.writeContracts.EtherOrcsPoly.address.toLowerCase() ? (
+      ) : props.writeContracts.Proxy && props.p.contract.id === props.writeContracts.Proxy.address.toLowerCase() ? (
         <OrcWidget p={props.p} writeContracts={props.writeContracts} />
       ) : (
         <ComethWidget p={props.p} writeContracts={props.writeContracts} />
@@ -136,7 +132,6 @@ function Tokens(props) {
         tokenID
         contract {
           id
-          name
         }
         owner {
           id

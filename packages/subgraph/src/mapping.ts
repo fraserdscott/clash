@@ -68,10 +68,6 @@ export function getOrCreateTokenContract(
   if (!entity) {
     entity = new TokenContract(id.toHexString());
     entity.currentTokenIndex = ZERO;
-
-    let contract = ERC721.bind(id);
-    let name = contract.try_name();
-    entity.name = normalize(name.value);
   }
 
   return entity;

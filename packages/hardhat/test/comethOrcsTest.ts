@@ -74,7 +74,7 @@ describe("Testing resolvers", function () {
         cometh.mint(owner.address, 1);
       }
 
-      orc.initMint(owner.address, 0, ORC_SUPPLY);
+      orc.initMint(owner.address, 1, ORC_SUPPLY + 1);
     });
 
     it("tokenByIndex should work", async function () {

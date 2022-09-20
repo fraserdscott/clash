@@ -29,9 +29,16 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     waitConfirmations: 5,
   });
 
-  const orcs = await deploy("EtherOrcsPoly", {
+  const orcsImpl = await deploy("EtherOrcsPoly", {
     from: deployer,
     args: [],
+    log: true,
+    waitConfirmations: 5,
+  });
+
+  const orcs = await deploy("Proxy", {
+    from: deployer,
+    args: [orcsImpl.address],
     log: true,
     waitConfirmations: 5,
   });
