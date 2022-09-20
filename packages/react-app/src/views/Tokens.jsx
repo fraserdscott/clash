@@ -22,7 +22,7 @@ const GOTCHI_SVG_GQL = gql`
 
 const ORC_GQL = gql`
   query ($_id: Int){
-    orc(filter:{_id: $_id}) {
+    orc(filter: { _id: $_id }) {
       _id
       metadata {
         name
@@ -127,7 +127,7 @@ export function TokenWidgetEmpty() {
 function Tokens(props) {
   const EXAMPLE_GRAPHQL = gql`
   {
-    tokens(orderBy: tokenIndex, first: 20) {
+    tokens(orderBy: tokenIndex, first: 32) {
         id
         tokenID
         contract {

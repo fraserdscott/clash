@@ -23,12 +23,16 @@ async function main() {
   }
 
   for (let i = 0; i < 50; i += 1) {
-    await execute("Aavegotchi", { from, log: true }, "mintWithTraits", from);
+    await execute("Aavegotchi", { from, log: true }, "mintWithTraits", from, i);
   }
 
   const orcProx = await get("Proxy");
   const orc = await ethers.getContractAt("EtherOrcsPoly", orcProx.address);
   await orc.initMint(orc.address, 1, 101);
+
+  for (let i = 1; i < 101; i += 1) {
+    await orc.manuallyAdjustOrc(i, 1, 2, 3, 4, 0, 0, 0);
+  }
 }
 
 main()

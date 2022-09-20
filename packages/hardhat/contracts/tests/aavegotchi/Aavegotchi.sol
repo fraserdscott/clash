@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "@openzeppelin/contracts/token/ERC721/presets/ERC721PresetMinterPauserAutoId.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {LibAavegotchi} from "./aavegotchi-contracts/contracts/Aavegotchi/libraries/LibAavegotchi.sol";
 import {Aavegotchi as AavegotchiStruct, EQUIPPED_WEARABLE_SLOTS, NUMERIC_TRAITS_NUM} from "./aavegotchi-contracts/contracts/Aavegotchi/libraries/LibAppStorage.sol";
 
-contract Aavegotchi is ERC721PresetMinterPauserAutoId {
+contract Aavegotchi is ERC721 {
     mapping(uint256 => AavegotchiStruct) aavegotchis;
 
-    constructor() ERC721PresetMinterPauserAutoId("Aavegotchi", "GOTCHI", "") {}
+    constructor() ERC721("Aavegotchi", "GOTCHI") {}
 
-    function mintWithTraits(address to) external {
-        uint256 randomNumberN = uint256(keccak256(abi.encodePacked("0", "0")));
+    function mintWithTraits(address to, uint256 tokenId) external {
+        uint256 randomNumberN = uint256(keccak256(abi.encodePacked(tokenId)));
         int16[NUMERIC_TRAITS_NUM] memory collateralTypeInfo;
         collateralTypeInfo[0] = 1;
         collateralTypeInfo[1] = 1;
@@ -20,13 +20,14 @@ contract Aavegotchi is ERC721PresetMinterPauserAutoId {
         collateralTypeInfo[4] = 1;
         collateralTypeInfo[5] = 1;
 
-        aavegotchis[0].numericTraits = LibAavegotchi.toNumericTraits(
+        // Need to check ID and change random number based on this
+        aavegotchis[tokenId].numericTraits = LibAavegotchi.toNumericTraits(
             randomNumberN,
             collateralTypeInfo,
             0
         );
 
-        mint(to);
+        _mint(to, tokenId);
     }
 
     function getNumericTraits(uint256 _tokenId)

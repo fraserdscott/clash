@@ -5,7 +5,7 @@ const snarkjs = require("snarkjs");
 
 const INPUT = {
   homeStats: [15, 100, 5, 100],
-  awayStats: [45, 31, 56, 91],
+  awayStats: [100, 66, 66, 15],
   rand: 2,
 };
 
@@ -75,7 +75,7 @@ describe("Testing resolvers", function () {
       }
 
       for (let i = 0; i < GOTCHI_SUPPLY; i += 1) {
-        gotchi.mintWithTraits(owner.address);
+        gotchi.mintWithTraits(owner.address, i);
       }
     });
 
@@ -83,21 +83,21 @@ describe("Testing resolvers", function () {
       expect(await cometh.tokenByIndex(73)).to.deep.equal(1000073);
     });
 
-    it("Should return the correct stats 0", async function () {
+    it("Should return the correct Cometh stats", async function () {
       expect(await comethResolver.tokenStats(1000073)).to.deep.equal([
-        BigNumber.from(15),
-        BigNumber.from(100),
-        BigNumber.from(5),
-        BigNumber.from(100),
+        BigNumber.from(INPUT.homeStats[0]),
+        BigNumber.from(INPUT.homeStats[1]),
+        BigNumber.from(INPUT.homeStats[2]),
+        BigNumber.from(INPUT.homeStats[3]),
       ]);
     });
 
-    it("Should return the correct stats 0", async function () {
+    it("Should return the correct Aavegotchi stats ", async function () {
       expect(await gotchiResolver.tokenStats(0)).to.deep.equal([
-        BigNumber.from(45),
-        BigNumber.from(31),
-        BigNumber.from(56),
-        BigNumber.from(91),
+        BigNumber.from(INPUT.awayStats[0]),
+        BigNumber.from(INPUT.awayStats[1]),
+        BigNumber.from(INPUT.awayStats[2]),
+        BigNumber.from(INPUT.awayStats[3]),
       ]);
     });
 

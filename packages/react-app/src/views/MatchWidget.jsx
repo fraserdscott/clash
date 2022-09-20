@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { MatchInner } from "./Match";
 
-export const tokenToName = token => `${token.contract.name} #${token.tokenID}`;
+export const tokenToName = token => `Token #${token.tokenID}`;
 
 export const matchDate = (epochId, battler) =>
   new Date((parseInt(battler.startTimestamp) + epochId * parseInt(battler.matchInterval)) * 1000);
