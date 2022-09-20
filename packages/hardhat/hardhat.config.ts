@@ -2,6 +2,7 @@ require("dotenv").config();
 const fs = require("fs");
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-chai-matchers";
 
 const defaultNetwork = "localhost";
 

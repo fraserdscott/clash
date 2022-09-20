@@ -1,10 +1,7 @@
-const { ethers } = require("hardhat");
-const { use, expect } = require("chai");
-const { solidity } = require("ethereum-waffle");
-const { BigNumber } = require("ethers");
+import { ethers } from "hardhat";
+import { expect } from "chai";
+import { BigNumber } from "ethers";
 const snarkjs = require("snarkjs");
-
-use(solidity);
 
 const INPUT = {
   homeStats: [15, 100, 5, 100],
