@@ -40,7 +40,7 @@
     "compile": "hardhat compile",
     "deploy": "hardhat deploy --export-all ../react-app/src/contracts/hardhat_contracts.json",
     "postdeploy": "hardhat run scripts/publish.js",
-    "setup": "hardhat run scripts/setup.js",
+    "setup": "hardhat run scripts/setup.ts",
     "watch": "node scripts/watch.js",
     "accounts": "hardhat accounts",
     "balance": "hardhat balance",

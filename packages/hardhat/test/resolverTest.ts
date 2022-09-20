@@ -3,6 +3,8 @@ import { expect } from "chai";
 import { BigNumber } from "ethers";
 const snarkjs = require("snarkjs");
 
+const SUPPLY = 100;
+
 describe("Testing resolvers", function () {
   describe("BasicResolver", function () {
     let resolver;
@@ -99,12 +101,12 @@ describe("Testing resolvers", function () {
         300,
         1,
         verifier.address,
-        [100],
+        [SUPPLY],
         [resolver.address],
         [erc721.address]
       );
 
-      for (let i = 0; i < 3; i += 1) {
+      for (let i = 0; i < SUPPLY; i += 1) {
         erc721.mint(owner.address);
         erc721.mint(owner.address);
         erc721.mint(owner.address);

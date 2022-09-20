@@ -1,4 +1,4 @@
-const { deployments } = require("hardhat");
+import { deployments } from "hardhat";
 
 const { execute } = deployments;
 
