@@ -56,24 +56,38 @@ describe("Testing resolvers", function () {
   });
 
   describe("EtherOrcsResolver", function () {
-    let resolver;
+    let resolver, orc;
 
     it("Should deploy contracts", async function () {
       const OrcsFactory = await ethers.getContractFactory("EtherOrcsPoly");
       const ResolverFactory = await ethers.getContractFactory(
         "EtherOrcsResolver"
       );
+      const ProxyFac = await ethers.getContractFactory("Proxy");
+      const orcImpl = await OrcsFactory.deploy();
+      const orcProx = await ProxyFac.deploy(orcImpl.address);
+      orc = await ethers.getContractAt("EtherOrcsPoly", orcProx.address);
 
-      const orcs = await OrcsFactory.deploy();
-      resolver = await ResolverFactory.deploy(orcs.address);
+      resolver = await ResolverFactory.deploy(orc.address);
     });
 
-    it("Should return the correct stats 3", async function () {
+    it("Should return the correct stats for a basic Orc", async function () {
       expect(await resolver.tokenStats(3)).to.deep.equal([
         BigNumber.from(0),
         BigNumber.from(0),
         BigNumber.from(0),
         BigNumber.from(0),
+      ]);
+    });
+
+    it("Should return the correct stats for a manually set orc", async function () {
+      await orc.manuallyAdjustOrc(4, 1, 2, 3, 4, 0, 0, 0);
+
+      expect(await resolver.tokenStats(4)).to.deep.equal([
+        BigNumber.from(1),
+        BigNumber.from(2),
+        BigNumber.from(3),
+        BigNumber.from(4),
       ]);
     });
   });

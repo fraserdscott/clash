@@ -9,3 +9,6 @@
 [submodule "packages/hardhat/contracts/tests/aavegotchi/aavegotchi-contracts"]
 	path = packages/hardhat/contracts/tests/aavegotchi/aavegotchi-contracts
 	url = https://github.com/aavegotchi/aavegotchi-contracts.git
+[submodule "packages/hardhat/contracts/tests/etherorcs/etherOrcs-contracts"]
+	path = packages/hardhat/contracts/tests/etherorcs/etherOrcs-contracts
+	url = https://github.com/EtherOrcsOfficial/etherOrcs-contracts.git

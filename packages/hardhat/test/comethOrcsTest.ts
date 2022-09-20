@@ -9,12 +9,15 @@ const INPUT = {
   rand: 2,
 };
 
+const COMETH_SUPPLY = 75;
+const ORC_SUPPLY = 100;
+
 describe("Testing resolvers", function () {
   describe("Testing Battler with Cometh and EtherOrcs", function () {
     let owner;
     let battler;
     let cometh;
-    let etherOrcsPoly;
+    let orc;
     let comethResolver;
     let orcsResolver;
 
@@ -31,7 +34,7 @@ describe("Testing resolvers", function () {
       );
 
       cometh = await ShipsFactory.deploy();
-      cometh.newModel(1, 75);
+      cometh.newModel(1, COMETH_SUPPLY);
 
       const rules = await SpaceShipsRulesFactory.deploy();
       await rules.makeRule(1, 100, 0, 0, 0);
@@ -41,7 +44,7 @@ describe("Testing resolvers", function () {
       /* EtherOrcs Setup */
       const OrcsFactory = await ethers.getContractFactory("EtherOrcsPoly");
 
-      etherOrcsPoly = await OrcsFactory.deploy();
+      orc = await OrcsFactory.deploy();
 
       const ComethResolverFactory = await ethers.getContractFactory(
         "ComethResolver"
@@ -55,32 +58,30 @@ describe("Testing resolvers", function () {
       comethResolver = await ComethResolverFactory.deploy(
         miningManager.address
       );
-      orcsResolver = await OrcsResolverFactory.deploy(etherOrcsPoly.address);
+      orcsResolver = await OrcsResolverFactory.deploy(orc.address);
 
       const verifier = await VerifierFactory.deploy();
       battler = await BattlerFactory.deploy(
         300,
         1,
         verifier.address,
-        [75, 100],
+        [COMETH_SUPPLY, ORC_SUPPLY],
         [comethResolver.address, orcsResolver.address],
-        [cometh.address, etherOrcsPoly.address]
+        [cometh.address, orc.address]
       );
 
-      for (let i = 0; i < 75; i += 1) {
+      for (let i = 0; i < COMETH_SUPPLY; i += 1) {
         cometh.mint(owner.address, 1);
       }
 
-      for (let i = 0; i < 2; i += 1) {
-        etherOrcsPoly.safeMint(owner.address);
-      }
+      orc.initMint(owner.address, 0, ORC_SUPPLY);
     });
 
     it("tokenByIndex should work", async function () {
       expect(await cometh.tokenByIndex(73)).to.deep.equal(1000073);
     });
 
-    it("Should return the correct stats 0", async function () {
+    it("Should return the correct Cometh stats", async function () {
       expect(await comethResolver.tokenStats(1000073)).to.deep.equal([
         BigNumber.from(15),
         BigNumber.from(100),
@@ -89,7 +90,7 @@ describe("Testing resolvers", function () {
       ]);
     });
 
-    it("Should return the correct stats 0", async function () {
+    it("Should return the correct Orc stats", async function () {
       expect(await orcsResolver.tokenStats(0)).to.deep.equal([
         BigNumber.from(0),
         BigNumber.from(0),
@@ -101,8 +102,8 @@ describe("Testing resolvers", function () {
     it("Should not allow battling before epoch simulated", async function () {
       await expect(
         battler.battle(
-          etherOrcsPoly.address,
-          etherOrcsPoly.address,
+          orc.address,
+          orc.address,
           0,
           1,
           0,
@@ -121,8 +122,8 @@ describe("Testing resolvers", function () {
     it("Should not allow battling tokens that are not matched", async function () {
       await expect(
         battler.battle(
-          etherOrcsPoly.address,
-          etherOrcsPoly.address,
+          orc.address,
+          orc.address,
           0,
           1,
           0,
@@ -140,7 +141,7 @@ describe("Testing resolvers", function () {
 
     it("Should not allow battling a cometh and orc token without a valid proof ", async function () {
       await expect(
-        battler.battle(cometh.address, etherOrcsPoly.address, 73, 0, 0, 0, "0x")
+        battler.battle(cometh.address, orc.address, 73, 0, 0, 0, "0x")
       ).to.be.revertedWith("Invalid proof.");
     });
 
@@ -159,7 +160,7 @@ describe("Testing resolvers", function () {
       await expect(
         battler.battle(
           cometh.address,
-          etherOrcsPoly.address,
+          orc.address,
           73,
           0,
           0,
@@ -184,7 +185,7 @@ describe("Testing resolvers", function () {
       await expect(
         battler.battle(
           cometh.address,
-          etherOrcsPoly.address,
+          orc.address,
           73,
           0,
           0,
@@ -195,7 +196,7 @@ describe("Testing resolvers", function () {
         .to.emit(battler, "MatchResolved")
         .withArgs(
           cometh.address,
-          etherOrcsPoly.address,
+          orc.address,
           owner.address,
           1000073,
           0,
