@@ -10,8 +10,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 
 const TOKEN_GRAPHQL = gql`
-query getToken($id: ID!){
-  token(id: $id) {
+  query getToken($id: ID!) {
+    token(id: $id) {
       id
       contract {
         id
@@ -23,26 +23,26 @@ query getToken($id: ID!){
       owner {
         id
       }
-  }
-  epoches {
-    id
-    random
-    matches {
+    }
+    epoches {
       id
+      random
+      matches {
+        id
+      }
+    }
+    battler(id: 0) {
+      id
+      matchInterval
+      reward
+      startTimestamp
+      globalSupply
+    }
+    tokenContracts {
+      id
+      offset
     }
   }
-  battler(id: 0) {
-    id
-    matchInterval
-    reward
-    startTimestamp
-    globalSupply
-  }
-  tokenContracts {
-    id
-    offset
-  }
-}
 `;
 
 function Token(props) {
@@ -98,7 +98,7 @@ function Token(props) {
                     </div>
                     :
                     <div style={{ borderStyle: "solid" }}>
-                      <h2>{matchDate(i, data.battler).toUTCString()}</h2>
+                      {/* <h2>{matchDate(i, data.battler).toUTCString()}</h2>
                       <div style={{ display: "flex", justifyContent: "center" }}>
                         <TokenWidgetEmpty />
                         vs
@@ -112,7 +112,7 @@ function Token(props) {
                           }}
                         >
                           Simulate
-                        </Button> : null}
+                        </Button> : null} */}
                     </div>
                 )}
               </div>

@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { TokenWidget } from "./Tokens";
+import { ComethWidget } from "./Tokens";
 import { Button } from "antd";
 import { calculateBattleProof } from "../snarks.js"
 import { useLocation } from "react-router-dom";
@@ -154,11 +154,11 @@ export function MatchInner(props) {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", justifyContent: 'center' }}>
               <Link to={`/token/${data.homeToken.id}`}>
-                <TokenWidget p={data.homeToken} writeContracts={props.writeContracts} />
+                <ComethWidget p={data.homeToken} writeContracts={props.writeContracts} />
               </Link>
               vs
               <Link to={`/token/${data.awayToken.id}`}>
-                <TokenWidget p={data.awayToken} writeContracts={props.writeContracts} />
+                <ComethWidget p={data.awayToken} writeContracts={props.writeContracts} />
               </Link>
 
             </div>
