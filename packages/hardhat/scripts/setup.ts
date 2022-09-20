@@ -27,7 +27,7 @@ async function main() {
   }
 
   for (let i = 0; i < 50; i += 1) {
-    await execute("Aavegotchi", { from, log: true }, "mint", from);
+    await execute("Aavegotchi", { from, log: true }, "mintWithTraits", from);
   }
 }
 
