@@ -313,7 +313,7 @@ module.exports = {
   circom: {
     inputBasePath: "./circuits",
     outputBasePath: "../react-app/public",
-    ptau: "powersOfTau28_hez_final_17.ptau",
+    ptau: "https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_17.ptau",
     circuits: [
       {
         name: "battle",

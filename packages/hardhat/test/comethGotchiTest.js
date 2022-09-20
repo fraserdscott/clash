@@ -12,6 +12,9 @@ const INPUT = {
   rand: 2,
 };
 
+const COMETH_SUPPLY = 75;
+const GOTCHI_SUPPLY = 100;
+
 describe("Testing resolvers", function () {
   describe("Testing Battler with Cometh and Aavegotchi", function () {
     let owner;
@@ -34,7 +37,7 @@ describe("Testing resolvers", function () {
       );
 
       cometh = await ShipsFactory.deploy();
-      cometh.newModel(1, 75);
+      cometh.newModel(1, COMETH_SUPPLY);
 
       const rules = await SpaceShipsRulesFactory.deploy();
       await rules.makeRule(1, 100, 0, 0, 0);
@@ -65,16 +68,16 @@ describe("Testing resolvers", function () {
         300,
         1,
         verifier.address,
-        [75, 100],
+        [COMETH_SUPPLY, GOTCHI_SUPPLY],
         [comethResolver.address, gotchiResolver.address],
         [cometh.address, gotchi.address]
       );
 
-      for (let i = 0; i < 75; i += 1) {
+      for (let i = 0; i < COMETH_SUPPLY; i += 1) {
         cometh.mint(owner.address, 1);
       }
 
-      for (let i = 0; i < 2; i += 1) {
+      for (let i = 0; i < GOTCHI_SUPPLY; i += 1) {
         gotchi.mintWithTraits(owner.address);
       }
     });
