@@ -60,63 +60,67 @@ function Token(props) {
     fetchData();
   }, [data, props.writeContracts.Battler]);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <>
-      {
-        error ? error.toString() :
-          loading ? null
-            : (
-              <div>
-                <h1>{tokenToName(data.token)}</h1>
-                <div style={{ border: "solid", display: "flex", flexDirection: 'column' }}>
-                  <h2>Overview</h2>
-                  <div style={{ display: "flex" }}>
-                    <TokenWidget p={data.token} writeContracts={props.writeContracts} />
-                    <h3>Stats</h3>
-                    <ul>
-                      <li>Health: {stats[0].toString()}</li>
-                      <li>Damage: {stats[1].toString()}</li>
-                      <li>Attack recover time: {stats[2].toString()}</li>
-                      <li>Health per turn: {stats[3].toString()}</li>
-                    </ul>
-                  </div>
-                </div>
+      <div>
+        <h1>{tokenToName(data.token)}</h1>
+        <div style={{ border: "solid", display: "flex", flexDirection: "column" }}>
+          <h2>Overview</h2>
+          <div style={{ display: "flex" }}>
+            <TokenWidget p={data.token} writeContracts={props.writeContracts} />
+            <h3>Stats</h3>
+            <ul>
+              <li>Health: {stats[0].toString()}</li>
+              <li>Damage: {stats[1].toString()}</li>
+              <li>Attack recover time: {stats[2].toString()}</li>
+              <li>Health per turn: {stats[3].toString()}</li>
+            </ul>
+          </div>
+        </div>
 
-                <h2>Matches</h2>
-                {[0, 1, 2, 3, 4, 5].map(i =>
-                  data.epoches.find(e => e.id === i.toString()) ?
-                    <div>
-                      <MatchWidget
-                        battler={data.battler}
-                        tokenContracts={data.tokenContracts}
-                        epoch={data.epoches.find(e => e.id === i.toString())}
-                        p={data.token}
-                        tx={props.tx}
-                        writeContracts={props.writeContracts}
-                      />
-                    </div>
-                    :
-                    <div style={{ borderStyle: "solid" }}>
-                      {/* <h2>{matchDate(i, data.battler).toUTCString()}</h2>
-                      <div style={{ display: "flex", justifyContent: "center" }}>
-                        <TokenWidgetEmpty />
-                        vs
-                        <TokenWidgetEmpty />
-                      </div>
-                      {Date.now() >= matchDate(i, data.battler) ?
-                        <Button
-                          style={{ marginTop: 8 }}
-                          onClick={async () => {
-                            props.tx(await props.writeContracts.Battler.simulateEpoch(i, Math.floor(Math.random() * 100000)))
-                          }}
-                        >
-                          Simulate
-                        </Button> : null} */}
-                    </div>
-                )}
+        <h2>Matches</h2>
+        {[0, 1, 2, 3, 4, 5].map(i =>
+          data.epoches.find(e => e.id === i.toString()) ? (
+            <div>
+              <MatchWidget
+                battler={data.battler}
+                tokenContracts={data.tokenContracts}
+                epoch={data.epoches.find(e => e.id === i.toString())}
+                p={data.token}
+                tx={props.tx}
+                writeContracts={props.writeContracts}
+              />
+            </div>
+          ) : (
+            <div style={{ borderStyle: "solid" }}>
+              <h2>{matchDate(i, data.battler).toUTCString()}</h2>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <TokenWidgetEmpty />
+                vs
+                <TokenWidgetEmpty />
               </div>
-            )
-      }
+              {Date.now() >= matchDate(i, data.battler) ? (
+                <Button
+                  style={{ marginTop: 8 }}
+                  onClick={async () => {
+                    props.tx(await props.writeContracts.Battler.simulateEpoch(i, Math.floor(Math.random() * 100000)));
+                  }}
+                >
+                  Simulate
+                </Button>
+              ) : null}
+            </div>
+          ),
+        )}
+      </div>
     </>
   );
 }

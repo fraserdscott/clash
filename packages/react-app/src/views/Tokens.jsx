@@ -9,8 +9,8 @@ const GOTCHI_NAME_GQL = gql`
       id
       name
     }
-}`;
-
+  }
+`;
 
 const GOTCHI_SVG_GQL = gql`
   query ($id: ID) {
@@ -18,10 +18,11 @@ const GOTCHI_SVG_GQL = gql`
       id
       svg
     }
-}`;
+  }
+`;
 
 const ORC_GQL = gql`
-  query ($_id: Int){
+  query ($_id: Int) {
     orc(filter: { _id: $_id }) {
       _id
       metadata {
@@ -29,7 +30,8 @@ const ORC_GQL = gql`
         image
       }
     }
-}`;
+  }
+`;
 
 const nameClient = new ApolloClient({
   uri: "https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic",
@@ -52,19 +54,17 @@ export function GotchiWidget(props) {
 
   return (
     <div style={{ border: "solid", width: 300, height: 350 }}>
-      {
-        data && data.aavegotchi ?
-          <div style={{ margin: 20, marginBottom: 0, border: "solid" }}>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: data.aavegotchi.svg,
-              }}
-            />
-          </div>
-          : (
-            <img style={{ border: "solid" }} width="250" src="https://app.aavegotchi.com/images/portals/h1_closed.svg" />
-          )
-      }
+      {data && data.aavegotchi ? (
+        <div style={{ margin: 20, marginBottom: 0, border: "solid" }}>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: data.aavegotchi.svg,
+            }}
+          />
+        </div>
+      ) : (
+        <img style={{ border: "solid" }} width="250" src="https://app.aavegotchi.com/images/portals/h1_closed.svg" />
+      )}
       <div>
         <h3>{dataName && dataName.aavegotchi ? dataName.aavegotchi.name : `Gotchi #${props.p.tokenID}`}</h3>
         Owner: <Address address={props.p.owner.id} fontSize={14} />
@@ -100,34 +100,35 @@ export function ComethWidget(props) {
 }
 
 export function TokenWidget(props) {
-  return (
-    <div>{
-      props.writeContracts.Aavegotchi && props.p.contract.id === props.writeContracts.Aavegotchi.address.toLowerCase() ? (
-        <GotchiWidget p={props.p} writeContracts={props.writeContracts} />
-      ) : props.writeContracts.Proxy && props.p.contract.id === props.writeContracts.Proxy.address.toLowerCase() ? (
-        <OrcWidget p={props.p} writeContracts={props.writeContracts} />
-      ) : (
-        <ComethWidget p={props.p} writeContracts={props.writeContracts} />
-      )
-    }</div>
-  );
-};
+  if (props.writeContracts.Aavegotchi) {
+    if (props.p.contract.id === props.writeContracts.Aavegotchi.address.toLowerCase()) {
+      return <GotchiWidget p={props.p} writeContracts={props.writeContracts} />;
+    } else if (props.p.contract.id === props.writeContracts.Proxy.address.toLowerCase()) {
+      return <OrcWidget p={props.p} writeContracts={props.writeContracts} />;
+    }
+    return <ComethWidget p={props.p} writeContracts={props.writeContracts} />;
+  }
+
+  return <TokenWidgetEmpty />;
+}
 
 export function TokenWidgetEmpty() {
-  return <div style={{ border: "solid" }}>
-    <img
-      style={{ border: "solid" }}
-      width="200"
-      src="https://upload.wikimedia.org/wikipedia/commons/4/46/Question_mark_%28black%29.svg"
-    />
-    <h2>?</h2>
-  </div>
+  return (
+    <div style={{ border: "solid" }}>
+      <img
+        style={{ border: "solid" }}
+        width="200"
+        src="https://upload.wikimedia.org/wikipedia/commons/4/46/Question_mark_%28black%29.svg"
+      />
+      <h2>?</h2>
+    </div>
+  );
 }
 
 function Tokens(props) {
   const EXAMPLE_GRAPHQL = gql`
-  {
-    tokens(orderBy: tokenIndex, first: 32) {
+    {
+      tokens(orderBy: tokenIndex, first: 32) {
         id
         tokenID
         contract {
@@ -136,8 +137,8 @@ function Tokens(props) {
         owner {
           id
         }
+      }
     }
-  }
   `;
 
   const { loading, data, error } = useQuery(EXAMPLE_GRAPHQL, { pollInterval: 2500 });
@@ -145,23 +146,21 @@ function Tokens(props) {
   return (
     <>
       <h1>All NFTs</h1>
-      {
-        error ? error.toString() :
-          loading ? null
-            : (
-              <div style={{ display: "flex", flexWrap: 'wrap', justifyContent: 'center' }}>
-                {data.tokens.length === 0
-                  ? "There are no NFT's yet."
-                  : data.tokens.map(p => (
-                    <Link to={`/token/${p.id}`}>
-                      <div style={{ margin: 4 }}>
-                        <TokenWidget p={p} writeContracts={props.writeContracts} />
-                      </div>
-                    </Link>
-                  ))}
-              </div>
-            )
-      }
+      {error ? (
+        error.toString()
+      ) : loading ? null : (
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
+          {data.tokens.length === 0
+            ? "There are no NFT's yet."
+            : data.tokens.map(p => (
+              <Link to={`/token/${p.id}`}>
+                <div style={{ margin: 4 }}>
+                  <TokenWidget p={p} writeContracts={props.writeContracts} />
+                </div>
+              </Link>
+            ))}
+        </div>
+      )}
     </>
   );
 }

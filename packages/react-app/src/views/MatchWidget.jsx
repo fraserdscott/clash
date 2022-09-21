@@ -38,39 +38,29 @@ const TOKENS_GRAPHQL = gql`
   }
 `;
 
-
 function MatchWidget(props) {
   const [homeGlobalIndex, setHomeGlobalIndex] = useState(0);
   const [awayGlobalIndex, setAwayGlobalIndex] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
-      if (props.writeContracts.Cometh) {
-        const thisGlobalIndex = parseInt(props.p.contract.offset) + parseInt(props.p.tokenIndex);
+      const thisGlobalIndex = parseInt(props.p.contract.offset) + parseInt(props.p.tokenIndex);
 
-        const isHome =
-          Math.floor(thisGlobalIndex / (parseInt(props.epoch.random) % parseInt(props.battler.globalSupply))) % 2 === 0;
-        setHomeGlobalIndex(
-          isHome
-            ? thisGlobalIndex
-            : mod(thisGlobalIndex - parseInt(props.epoch.random), parseInt(props.battler.globalSupply)),
-        );
-        setAwayGlobalIndex(
-          isHome
-            ? (thisGlobalIndex + parseInt(props.epoch.random)) % parseInt(props.battler.globalSupply)
-            : thisGlobalIndex,
-        );
-      }
+      const isHome =
+        Math.floor(thisGlobalIndex / (parseInt(props.epoch.random) % parseInt(props.battler.globalSupply))) % 2 === 0;
+      setHomeGlobalIndex(
+        isHome
+          ? thisGlobalIndex
+          : mod(thisGlobalIndex - parseInt(props.epoch.random), parseInt(props.battler.globalSupply)),
+      );
+      setAwayGlobalIndex(
+        isHome
+          ? (thisGlobalIndex + parseInt(props.epoch.random)) % parseInt(props.battler.globalSupply)
+          : thisGlobalIndex,
+      );
     }
     fetchData();
-  }, [
-    props.battler.globalSupply,
-    props.epoch.random,
-    props.p.contract.offset,
-    props.p.tokenID,
-    props.p.tokenIndex,
-    props.writeContracts.Cometh,
-  ]);
+  }, [props.battler.globalSupply, props.epoch.random, props.p.contract.offset, props.p.tokenIndex]);
 
   const { loading, data } = useQuery(CONTRACTS_GRAPHQL, {
     pollInterval: 2500,
@@ -102,7 +92,6 @@ function MatchWidget(props) {
     />
   );
 }
-
 
 function WrapperThing(props) {
   const { loading, data } = useQuery(TOKENS_GRAPHQL, {
