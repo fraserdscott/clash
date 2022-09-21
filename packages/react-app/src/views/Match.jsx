@@ -11,7 +11,16 @@ import { useEffect } from "react";
 const nRounds = 10;
 
 export const battle = (homeStats, awayStats, rand) => {
-  const transcript = [];
+  const transcript = [
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ border: "dashed", width: 500 }}>
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <h4>Home ❤️: {homeStats[0]}</h4>
+          <h4>Away ❤️: {awayStats[0]}</h4>
+        </div>
+      </div>
+    </div>,
+  ];
   const healthsA = new Array(nRounds);
   const healthsB = new Array(nRounds);
 
@@ -20,27 +29,30 @@ export const battle = (homeStats, awayStats, rand) => {
   healthsB[0] = awayStats[0] + 100000;
 
   for (var i = 1; i < nRounds; i++) {
-    const homeRound = i % homeStats[2] === 0 ? 1 : 0;
-    const awayRound = i % awayStats[2] === 0 ? 1 : 0;
+    const homeCanHit = i % homeStats[2] === 0;
+    const awayCanHit = i % awayStats[2] === 0;
+    const homeHasHit = homeCanHit ? 1 : 0;
+    const awayHasHit = awayCanHit === 0 ? 1 : 0;
 
-    healthsA[i] = healthsA[i - 1] + homeStats[3] - awayStats[1] * awayRound;
-    healthsB[i] = healthsB[i - 1] + awayStats[3] - homeStats[1] * homeRound;
+    healthsA[i] = healthsA[i - 1] + homeStats[3] - awayStats[1] * awayHasHit;
+    healthsB[i] = healthsB[i - 1] + awayStats[3] - homeStats[1] * homeHasHit;
 
     transcript.push(
-      <div>
-        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-          <h4>Home ❤️: {healthsA[i] - 100000}</h4>
-          <h4>Away ❤️: {healthsB[i] - 100000}</h4>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ border: "dashed", width: 500 }}>
+          <div>
+            Home {homeHasHit ? "hits" : "misses"}, doing {homeStats[1] * homeHasHit} damage to away.
+          </div>
+          <div>
+            Away {awayHasHit ? "hits" : "misses"}, doing {awayStats[1] * awayHasHit} damage to home.
+          </div>
+          <div>Home regenerates {homeStats[3]} health.</div>
+          <div>Away regenerates {awayStats[3]} health.</div>
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+            <h4>Home ❤️: {healthsA[i] - 100000}</h4>
+            <h4>Away ❤️: {healthsB[i] - 100000}</h4>
+          </div>
         </div>
-        <div>
-          Home {homeRound ? "hits" : "misses"}, doing {homeStats[1]} damage to{" "}
-          away.
-        </div>
-        <div>
-          Away {awayRound ? "hits" : "misses"}, doing {awayStats[1]} damage to home.
-        </div>
-        <div>Home regenerates {homeStats[3]} health.</div>
-        <div>Away regenerates {awayStats[3]} health.</div>
       </div>,
     );
   }
@@ -231,14 +243,12 @@ export function MatchInner(props) {
             </div>
           )}
           <div>
-            <ol>
-              {matchResultInfo[1].map((s, i) => (
-                <div>
-                  <h3>Round {i + 1}</h3>
-                  <div>{s}</div>
-                </div>
-              ))}
-            </ol>
+            {matchResultInfo[1].map((s, i) => (
+              <div>
+                <h3>Round {i}</h3>
+                <div>{s}</div>
+              </div>
+            ))}
           </div>
         </div>
       )}
