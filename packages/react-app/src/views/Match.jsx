@@ -27,8 +27,21 @@ export const battle = (homeStats, awayStats, rand) => {
     healthsB[i] = healthsB[i - 1] + awayStats[3] - homeStats[1] * homeRound;
 
     transcript.push(
-      `Home token +${homeStats[3]}, -${awayStats[1] * awayRound}. New health: ${healthsA[i]}. Away token +${awayStats[3]
-      }, -${homeStats[1] * homeRound}. New health: ${healthsB[i]}`,
+      <div>
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <h4>Home ❤️: {healthsA[i] - 100000}</h4>
+          <h4>Away ❤️: {healthsB[i] - 100000}</h4>
+        </div>
+        <div>
+          Home {homeRound ? "hits" : "misses"}, doing {homeStats[1]} damage to{" "}
+          away.
+        </div>
+        <div>
+          Away {awayRound ? "hits" : "misses"}, doing {awayStats[1]} damage to home.
+        </div>
+        <div>Home regenerates {homeStats[3]} health.</div>
+        <div>Away regenerates {awayStats[3]} health.</div>
+      </div>,
     );
   }
 
@@ -104,13 +117,28 @@ function Match(props) {
   );
 }
 
+function Attributes(stats) {
+  stats = stats.stats;
+  return (
+    <div style={{ border: "solid", display: "flex", justifyContent: "space-evenly" }}>
+      <div>❤️{stats[0].toString()}</div>
+      <div>🗡️{stats[1].toString()}</div>
+      <div>🔃{stats[2].toString()}</div>
+      <div>❤️‍🩹{stats[3].toString()}</div>
+    </div>
+  );
+}
+
 export function MatchInner(props) {
-  const [homeStats, setHomeStats] = useState(["...", "...", "..."]);
-  const [awayStats, setAwayStats] = useState(["...", "...", "..."]);
+  const [homeStats, setHomeStats] = useState(["...", "...", "...", "..."]);
+  const [awayStats, setAwayStats] = useState(["...", "...", "...", "..."]);
 
   const homeSplit = props.homeId.split("_");
   const awaySplit = props.awayId.split("_");
   const id = homeSplit[0] + "_" + awaySplit[0] + "_" + homeSplit[1] + "_" + awaySplit[1] + "_" + props.epochId;
+
+  // This is wrong because of EtherOrcs being 1-indexed
+  console.log(props.homeId, props.awayId);
 
   const { loading, data, error } = useQuery(MATCH_GRAPHQL, {
     pollInterval: 2500,
@@ -154,27 +182,30 @@ export function MatchInner(props) {
     <div style={{ borderStyle: "solid" }}>
       {loading ? null : (
         <div style={{ display: "flex", flexDirection: "column" }}>
+          {data.match ? (
+            <h3>Resolved | Winner: {tokenToName(data.match.winner)}</h3>
+          ) : (
+            <h3>
+              Unresolved | Predicted Winner:{" "}
+              {matchResultInfo[0] === 1 ? tokenToName(data.homeToken) : tokenToName(data.awayToken)}{" "}
+            </h3>
+          )}
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <Link to={`/token/${data.homeToken.id}`}>
+            <Link to={`/ token / ${data.homeToken.id} `}>
               <TokenWidget p={data.homeToken} writeContracts={props.writeContracts} />
+              <Attributes stats={homeStats} />
             </Link>
             vs
-            <Link to={`/token/${data.awayToken.id}`}>
+            <Link to={`/ token / ${data.awayToken.id} `}>
               <TokenWidget p={data.awayToken} writeContracts={props.writeContracts} />
+              <Attributes stats={awayStats} />
             </Link>
           </div>
-          {data.match ? (
-            <div>Resolved | Winner: {tokenToName(data.match.winner)}</div>
-          ) : (
+          {data.match ? null : (
             <div>
-              <div>
-                Unresolved | Predicted Winner:{" "}
-                {matchResultInfo[0] === 1 ? tokenToName(data.homeToken) : tokenToName(data.awayToken)}{" "}
-              </div>
               <Button
                 style={{ marginTop: 8 }}
                 onClick={async () => {
-                  console.log("generating PROOF");
                   // This is a bit glitchy and slow
                   const [proof, publicSignals] = await calculateBattleProof(
                     homeStats.map(s => parseInt(s)),
@@ -201,8 +232,11 @@ export function MatchInner(props) {
           )}
           <div>
             <ol>
-              {matchResultInfo[1].map(s => (
-                <li>{s}</li>
+              {matchResultInfo[1].map((s, i) => (
+                <div>
+                  <h3>Round {i + 1}</h3>
+                  <div>{s}</div>
+                </div>
               ))}
             </ol>
           </div>

@@ -54,17 +54,17 @@ export function GotchiWidget(props) {
 
   return (
     <div style={{ border: "solid", width: 300, height: 350 }}>
-      {data && data.aavegotchi ? (
-        <div style={{ margin: 20, marginBottom: 0, border: "solid" }}>
+      <div style={{ margin: 20, marginBottom: 0, border: "solid", borderColor: "black" }}>
+        {data && data.aavegotchi ? (
           <div
             dangerouslySetInnerHTML={{
               __html: data.aavegotchi.svg,
             }}
           />
-        </div>
-      ) : (
-        <img style={{ border: "solid" }} width="250" src="https://app.aavegotchi.com/images/portals/h1_closed.svg" />
-      )}
+        ) : (
+          <img width="250" src="https://app.aavegotchi.com/images/portals/h1_closed.svg" />
+        )}
+      </div>
       <div>
         <h3>{dataName && dataName.aavegotchi ? dataName.aavegotchi.name : `Gotchi #${props.p.tokenID}`}</h3>
         Owner: <Address address={props.p.owner.id} fontSize={14} />
@@ -78,7 +78,9 @@ export function OrcWidget(props) {
 
   return (
     <div style={{ border: "solid", width: 300, height: 350 }}>
-      {<img style={{ border: "solid" }} width="250" src={data && data.orc ? data.orc.metadata.image : ""} />}
+      <div style={{ margin: 20, marginBottom: 0, border: "solid", borderColor: "black" }}>
+        <img width="250" src={data && data.orc ? data.orc.metadata.image : ""} />
+      </div>
       <div>
         <h3>{data && data.orc ? data.orc.metadata.name : `Orc #${props.p.tokenID}`}</h3>
         Owner: <Address address={props.p.owner.id} fontSize={14} />
@@ -90,7 +92,9 @@ export function OrcWidget(props) {
 export function ComethWidget(props) {
   return (
     <div style={{ border: "solid", width: 300, height: 350 }}>
-      <img style={{ border: "solid" }} width="200" src={`https://images.service.cometh.io/${props.p.tokenID}.png`} />
+      <div style={{ margin: 20, marginBottom: 0, border: "solid", borderColor: "black" }}>
+        <img width="200" src={`https://images.service.cometh.io/${props.p.tokenID}.png`} />
+      </div>
       <div>
         <h3>Cometh #{props.p.tokenID}</h3>
         Owner: <Address address={props.p.owner.id} fontSize={14} />

@@ -72,17 +72,27 @@ function Token(props) {
     <>
       <div>
         <h1>{tokenToName(data.token)}</h1>
-        <div style={{ border: "solid", display: "flex", flexDirection: "column" }}>
+        <div style={{ border: "solid", display: "flex", flexDirection: "column", padding: 12 }}>
           <h2>Overview</h2>
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", justifyContent: "space-evenly" }}>
             <TokenWidget p={data.token} writeContracts={props.writeContracts} />
-            <h3>Stats</h3>
-            <ul>
-              <li>Health: {stats[0].toString()}</li>
-              <li>Damage: {stats[1].toString()}</li>
-              <li>Attack recover time: {stats[2].toString()}</li>
-              <li>Health per turn: {stats[3].toString()}</li>
-            </ul>
+            <div style={{ display: "flex", flexDirection: "column", border: "solid", padding: 12, width: 300 }}>
+              <h3>Attributes</h3>
+              <div style={{ fontSize: 16 }}>
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                  <div>❤️ Health</div> <div>{stats[0].toString()}</div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                  <div>🗡️ Damage</div> <div>{stats[1].toString()}</div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                  <div>🔃 Attack recover time</div> <div>{stats[2].toString()}</div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                  <div>❤️‍🩹 Health per turn</div> <div>{stats[3].toString()}</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -114,7 +124,7 @@ function Token(props) {
                     props.tx(await props.writeContracts.Battler.simulateEpoch(i, Math.floor(Math.random() * 100000)));
                   }}
                 >
-                  Simulate
+                  Request random seed
                 </Button>
               ) : null}
             </div>
