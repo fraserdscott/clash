@@ -96,7 +96,7 @@ export function ComethWidget(props) {
         <img width="200" src={`https://images.service.cometh.io/${props.p.tokenID}.png`} />
       </div>
       <div>
-        <h3>Cometh #{props.p.tokenID}</h3>
+        <h3>Jumper • {props.p.tokenID - 1000000}/1000</h3>
         Owner: <Address address={props.p.owner.id} fontSize={14} />
       </div>
     </div>
